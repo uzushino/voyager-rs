@@ -10,6 +10,8 @@ jobs:
     steps:
     - name: Checkout Crate
       uses: actions/checkout@v3
+      with:
+        submodules: recursive
     - name: toolchain
       uses: dtolnay/rust-toolchain@master
       with:
@@ -27,6 +29,8 @@ jobs:
     steps:
     - name: Checkout Crate
       uses: actions/checkout@v3
+      with:
+        submodules: recursive
     - name: Set Toolchain
       uses: dtolnay/rust-toolchain@stable
     - name: Run test
