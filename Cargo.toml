@@ -1,6 +1,6 @@
 [package]
 name = "voyager_rs"
-version = "0.1.2"
+version = "0.0.1"
 authors = ["uzushino <torattoria.mamiya@gmail.com>"]
 edition = "2018"
 build = "build.rs"
