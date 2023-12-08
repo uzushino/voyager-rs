@@ -11,8 +11,7 @@ mod ffi {
         pub fn add_item(index: *mut Index, item: *const c_float, len: usize, size: c_uint);
         pub fn dispose(index: *mut Index);
 
-        #[allow(clippy::all)] 
-        #[allow(dead_code)]
+        #[allow(clippy::all, dead_code)]
         pub fn query(
             index: *mut Index,
             input: *const c_float,
