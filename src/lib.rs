@@ -10,6 +10,9 @@ mod ffi {
         pub fn init_index() -> *mut Index;
         pub fn add_item(index: *mut Index, item: *const c_float, len: usize, size: c_uint);
         pub fn dispose(index: *mut Index);
+
+        #[allow(clippy::all)] 
+        #[allow(dead_code)]
         pub fn query(
             index: *mut Index,
             input: *const c_float,
@@ -19,6 +22,32 @@ mod ffi {
             k: c_int,
             query_ef: c_int,
         );
+    }
+}
+
+pub struct Voyager(usize, *mut Index);
+
+impl Voyager {
+    pub fn new(n: usize) -> Self {
+        let index = unsafe { ffi::init_index() };
+        Voyager(n, index)
+    }
+
+    pub fn add_item(&self, w: &[f32]) {
+        let len = w.len();
+        let size = self.0;
+
+        unsafe {
+            ffi::add_item(self.1, w.as_ptr(), len, size as c_uint);
+        }
+    }
+}
+
+impl Drop for Voyager {
+    fn drop(&mut self) {
+        unsafe {
+            ffi::dispose(self.1);
+        }
     }
 }
 
