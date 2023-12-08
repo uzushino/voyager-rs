@@ -27,7 +27,12 @@ mod ffi {
             query_ef: c_int,
         );
 
-        pub fn get_distance(index: *mut Index, item1: *const c_float, item2: *const c_float, len: usize) -> c_float;
+        pub fn get_distance(
+            index: *mut Index,
+            item1: *const c_float,
+            item2: *const c_float,
+            len: usize,
+        ) -> c_float;
     }
 }
 
@@ -58,7 +63,15 @@ impl Voyager {
         let distance_ptr = distance.as_mut_ptr();
 
         unsafe {
-            ffi::query(self.0, w.as_ptr(), len, result_ptr, distance_ptr, k, ef.unwrap_or(-1));
+            ffi::query(
+                self.0,
+                w.as_ptr(),
+                len,
+                result_ptr,
+                distance_ptr,
+                k,
+                ef.unwrap_or(-1),
+            );
         }
 
         let a = unsafe { std::slice::from_raw_parts_mut(result_ptr, k as usize) };
@@ -70,9 +83,7 @@ impl Voyager {
     pub fn get_distance(&self, w1: &[f32], w2: &[f32]) -> f32 {
         let len = w1.len();
 
-        unsafe {
-            ffi::get_distance(self.0, w1.as_ptr(), w2.as_ptr(), len)
-        }
+        unsafe { ffi::get_distance(self.0, w1.as_ptr(), w2.as_ptr(), len) }
     }
 }
 
