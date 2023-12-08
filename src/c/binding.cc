@@ -40,3 +40,10 @@ void query(
 
     return ;
 }
+
+float get_distance(IndexVm* vm, float* a, float* b, size_t len) {
+  std::vector<float> v1(a, a + len);
+  std::vector<float> v2(b, b + len);
+
+  return vm->index_->GetDistance(v1, v2);
+}

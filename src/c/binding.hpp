@@ -19,6 +19,8 @@ extern "C" {
   void query(IndexVm* vm, float* item, size_t len, size_t *result, float *distances,
     int k = 1, long queryEf = -1);
 
+  float get_distance(IndexVm* vm, float* a, float* b, size_t len);
+
 #ifdef __cplusplus
 }
 #endif

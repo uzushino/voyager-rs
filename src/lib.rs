@@ -26,6 +26,8 @@ mod ffi {
             k: c_int,
             query_ef: c_int,
         );
+
+        pub fn get_distance(index: *mut Index, item1: *const c_float, item2: *const c_float, len: usize) -> c_float;
     }
 }
 
@@ -46,7 +48,7 @@ impl Voyager {
         }
     }
 
-    pub fn query(&self, w: &[f32], k: i32) -> (Vec<usize>, Vec<f32>) {
+    pub fn query(&self, w: &[f32], k: i32, ef: Option<i32>) -> (Vec<usize>, Vec<f32>) {
         let len = w.len();
 
         let mut result = Vec::with_capacity(k as usize);
@@ -56,13 +58,21 @@ impl Voyager {
         let distance_ptr = distance.as_mut_ptr();
 
         unsafe {
-            ffi::query(self.0, w.as_ptr(), len, result_ptr, distance_ptr, k, -1);
+            ffi::query(self.0, w.as_ptr(), len, result_ptr, distance_ptr, k, ef.unwrap_or(-1));
         }
 
         let a = unsafe { std::slice::from_raw_parts_mut(result_ptr, k as usize) };
         let b = unsafe { std::slice::from_raw_parts_mut(distance_ptr, k as usize) };
 
         (a.to_vec(), b.to_vec())
+    }
+
+    pub fn get_distance(&self, w1: &[f32], w2: &[f32]) -> f32 {
+        let len = w1.len();
+
+        unsafe {
+            ffi::get_distance(self.0, w1.as_ptr(), w2.as_ptr(), len)
+        }
     }
 }
 
@@ -94,10 +104,22 @@ mod test {
         v.add_item(v1, Some(1));
         v.add_item(v2, Some(2));
 
-        let (result, distance) = v.query(v1, 2);
+        let (result, distance) = v.query(v1, 2, None);
 
         assert!(result == vec![1, 2]);
         assert!(distance == vec![0.0, 125.0]);
+    }
+
+    #[test]
+    fn test_distance() {
+        let v = Voyager::new();
+
+        let v1 = &[1.0, 2.0, 3.0, 4.0, 5.0];
+        let v2 = &[6.0, 7.0, 8.0, 9.0, 10.0];
+
+        let distance = v.get_distance(v1, v2);
+
+        assert!(distance == 125.0);
     }
 
     #[test]

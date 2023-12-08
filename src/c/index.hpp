@@ -27,6 +27,10 @@ namespace voyager {
         return index_->query(queryVectors, k, queryEf);
       }
 
+      float GetDistance(std::vector<float> v1, std::vector<float> v2) {
+        return index_->getDistance(v1, v2);
+      }
+
     private:
       std::shared_ptr<::Index> index_;
 
