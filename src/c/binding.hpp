@@ -12,7 +12,7 @@ extern "C" {
 
   IndexVm* init_index();
 
-  void add_item(IndexVm* vm, float* item, size_t len, size_t _id);
+  void add_item(IndexVm* vm, float* item, size_t len, size_t is_some, size_t _id);
 
   void dispose(IndexVm* vm);
 

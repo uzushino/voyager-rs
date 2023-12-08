@@ -8,10 +8,15 @@ mod ffi {
     #[link(name = "binding", kind = "static")]
     extern "C" {
         pub fn init_index() -> *mut Index;
-        pub fn add_item(index: *mut Index, item: *const c_float, len: usize, size: c_uint);
+        pub fn add_item(
+            index: *mut Index,
+            item: *const c_float,
+            len: usize,
+            is_some: c_int,
+            id: c_uint,
+        );
         pub fn dispose(index: *mut Index);
 
-        #[allow(clippy::all, dead_code)]
         pub fn query(
             index: *mut Index,
             input: *const c_float,
@@ -24,28 +29,47 @@ mod ffi {
     }
 }
 
-pub struct Voyager(usize, *mut Index);
+pub struct Voyager(*mut Index);
 
 impl Voyager {
-    pub fn new(n: usize) -> Self {
+    pub fn new() -> Self {
         let index = unsafe { ffi::init_index() };
-        Voyager(n, index)
+        Voyager(index)
     }
 
-    pub fn add_item(&self, w: &[f32]) {
+    pub fn add_item(&self, w: &[f32], id: Option<u32>) {
         let len = w.len();
-        let size = self.0;
+        let is_some: c_int = id.is_some() as c_int;
 
         unsafe {
-            ffi::add_item(self.1, w.as_ptr(), len, size as c_uint);
+            ffi::add_item(self.0, w.as_ptr(), len, is_some, id.unwrap_or(0));
         }
+    }
+
+    pub fn query(&self, w: &[f32], k: i32) -> (Vec<usize>, Vec<f32>) {
+        let len = w.len();
+
+        let mut result = Vec::with_capacity(k as usize);
+        let result_ptr = result.as_mut_ptr();
+
+        let mut distance = Vec::with_capacity(k as usize);
+        let distance_ptr = distance.as_mut_ptr();
+
+        unsafe {
+            ffi::query(self.0, w.as_ptr(), len, result_ptr, distance_ptr, k, -1);
+        }
+
+        let a = unsafe { std::slice::from_raw_parts_mut(result_ptr, k as usize) };
+        let b = unsafe { std::slice::from_raw_parts_mut(distance_ptr, k as usize) };
+
+        (a.to_vec(), b.to_vec())
     }
 }
 
 impl Drop for Voyager {
     fn drop(&mut self) {
         unsafe {
-            ffi::dispose(self.1);
+            ffi::dispose(self.0);
         }
     }
 }
@@ -53,6 +77,22 @@ impl Drop for Voyager {
 #[cfg(test)]
 mod test {
     use super::*;
+
+    #[test]
+    fn test_voyager() {
+        let v = Voyager::new();
+
+        let v1 = &[1.0, 2.0, 3.0, 4.0, 5.0];
+        let v2 = &[6.0, 7.0, 8.0, 9.0, 10.0];
+
+        v.add_item(v1, Some(1));
+        v.add_item(v2, Some(2));
+
+        let (result, distance) = v.query(v1, 2);
+
+        assert!(result == vec![1, 2]);
+        assert!(distance == vec![0.0, 125.0]);
+    }
 
     #[test]
     fn test_runtime() {
@@ -67,8 +107,8 @@ mod test {
             let mut distance = Vec::with_capacity(2);
             let distance_ptr = distance.as_mut_ptr();
 
-            ffi::add_item(index, v1.as_ptr(), v1.len(), 0);
-            ffi::add_item(index, v2.as_ptr(), v2.len(), 1);
+            ffi::add_item(index, v1.as_ptr(), v1.len(), 1, 0);
+            ffi::add_item(index, v2.as_ptr(), v2.len(), 1, 1);
 
             ffi::query(
                 index,

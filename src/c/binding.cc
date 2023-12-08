@@ -8,9 +8,12 @@ IndexVm* init_index() {
   return vm;
 }
 
-void add_item(IndexVm* vm, float* vec_, size_t len, size_t _id) {
+void add_item(IndexVm* vm, float* vec_, size_t len, size_t is_some, size_t _id) {
   std::vector<float> v(vec_, vec_ + len);
-  vm->index_->AddItem(v, _id);
+  std::optional<size_t> id = is_some ? std::optional<size_t>(_id) : std::nullopt;
+
+  vm->index_->AddItem(v, id);
+
   return ;
 }
 
