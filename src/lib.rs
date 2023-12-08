@@ -66,6 +66,12 @@ impl Voyager {
     }
 }
 
+impl Default for Voyager {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl Drop for Voyager {
     fn drop(&mut self) {
         unsafe {
