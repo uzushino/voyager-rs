@@ -31,6 +31,10 @@ namespace voyager {
         return index_->getDistance(v1, v2);
       }
 
+      void ResizeIndex(size_t size) {
+        index_->resizeIndex(size);
+      }
+
     private:
       std::shared_ptr<::Index> index_;
 

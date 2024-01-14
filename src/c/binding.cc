@@ -47,3 +47,7 @@ float get_distance(IndexVm* vm, float* a, float* b, size_t len) {
 
   return vm->index_->GetDistance(v1, v2);
 }
+
+void resize(IndexVm* vm, size_t size) {
+  vm->index_->ResizeIndex(size);
+}
