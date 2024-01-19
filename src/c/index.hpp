@@ -11,8 +11,12 @@ namespace voyager {
         _num_dimensions(num_dimensions), 
         _storageDataType(StorageDataType::Float32) {
         index_ = std::make_shared<::TypedIndex<float, ::E4M3>>(
-          space, num_dimensions,
-          12, 200, 1, 1
+          space, 
+          num_dimensions,
+          12, 
+          200, 
+          1, 
+          1
         );
       }
 
@@ -33,6 +37,10 @@ namespace voyager {
 
       void ResizeIndex(size_t size) {
         index_->resizeIndex(size);
+      }
+
+      void SaveIndex(const char* path) {
+        index_->saveIndex(path);
       }
 
     private:

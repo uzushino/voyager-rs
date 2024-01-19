@@ -1,4 +1,7 @@
-use libc::{c_float, c_int, c_uint};
+use std::ffi::CString;
+use std::path::Path;
+
+use libc::{c_float, c_int, c_uint, c_void};
 
 pub enum Index {}
 
@@ -32,6 +35,11 @@ mod ffi {
             item1: *const c_float,
             item2: *const c_float,
             len: usize,
+        ) -> c_float;
+
+        pub fn save_index(
+            index: *mut Index,
+            output_path: *const c_void
         ) -> c_float;
     }
 }
@@ -85,6 +93,15 @@ impl Voyager {
 
         unsafe { ffi::get_distance(self.0, w1.as_ptr(), w2.as_ptr(), len) }
     }
+
+    pub fn save<P: AsRef<Path>>(&self, path: P) {
+        unsafe {
+            if let Some(f) = path.as_ref().as_os_str().to_str() {
+                let path_str_c = CString::new(f).unwrap();
+                ffi::save_index(self.0, path_str_c.as_ptr() as *const c_void);
+            }
+        }
+    }
 }
 
 impl Default for Voyager {
@@ -132,6 +149,20 @@ mod test {
 
         assert!(distance == 125.0);
     }
+    
+    #[test]
+    fn test_save() {
+        let v = Voyager::new();
+
+        let v1 = &[1.0, 2.0, 3.0, 4.0, 5.0];
+        let v2 = &[6.0, 7.0, 8.0, 9.0, 10.0];
+
+        v.add_item(v1, Some(1));
+        v.add_item(v2, Some(2));
+
+        v.save("test.index");
+    }
+
 
     #[test]
     fn test_runtime() {

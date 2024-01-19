@@ -21,6 +21,8 @@ extern "C" {
 
   float get_distance(IndexVm* vm, float* a, float* b, size_t len);
 
+  void save_index(IndexVm* vm, const char* path);
+
 #ifdef __cplusplus
 }
 #endif

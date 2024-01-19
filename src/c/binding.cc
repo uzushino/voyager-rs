@@ -51,3 +51,7 @@ float get_distance(IndexVm* vm, float* a, float* b, size_t len) {
 void resize(IndexVm* vm, size_t size) {
   vm->index_->ResizeIndex(size);
 }
+
+void save_index(IndexVm* vm, const char* path) {
+  vm->index_->SaveIndex(path);
+}
