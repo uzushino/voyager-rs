@@ -39,10 +39,7 @@ mod ffi {
             len: usize,
         ) -> c_float;
 
-        pub fn save_index(
-            index: *mut Index,
-            output_path: *const c_void
-        ) -> c_float;
+        pub fn save_index(index: *mut Index, output_path: *const c_void) -> c_float;
     }
 }
 
@@ -145,7 +142,7 @@ mod test {
 
         assert!(distance == 125.0);
     }
-    
+
     #[test]
     fn test_save() {
         let v = Voyager::new(5);
@@ -158,7 +155,6 @@ mod test {
 
         v.save("test.index");
     }
-
 
     #[test]
     fn test_runtime() {
