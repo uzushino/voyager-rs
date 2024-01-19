@@ -2,9 +2,9 @@
 #include <TypedIndex.h>
 #include "binding.hpp"
 
-IndexVm* init_index() {
+IndexVm* init_index(size_t num_dimensions) {
   IndexVm* vm = new IndexVm {};
-  vm->index_ = std::make_shared<voyager::Index>(SpaceType::Euclidean, 5);
+  vm->index_ = std::make_shared<voyager::Index>(SpaceType::Euclidean, num_dimensions);
   return vm;
 }
 

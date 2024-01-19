@@ -10,7 +10,7 @@ extern "C" {
     std::shared_ptr<voyager::Index> index_;
   } IndexVm;
 
-  IndexVm* init_index();
+  IndexVm* init_index(size_t num_dimensions);
 
   void add_item(IndexVm* vm, float* item, size_t len, size_t is_some, size_t _id);
 

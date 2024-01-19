@@ -33,8 +33,15 @@ assert!(result == vec![1, 2]);
 assert!(distance == vec![0.0, 125.0]);
 ```
 
+### mnist
+
+```
+$ cargo run --example mnist
+```
+
 ## Feature
 
 - [x] add_item
 - [x] get_distance
 - [x] query
+- [x] save_index

@@ -10,7 +10,8 @@ mod ffi {
 
     #[link(name = "binding", kind = "static")]
     extern "C" {
-        pub fn init_index() -> *mut Index;
+        pub fn init_index(num_dimensions: c_uint) -> *mut Index;
+
         pub fn add_item(
             index: *mut Index,
             item: *const c_float,
@@ -18,6 +19,7 @@ mod ffi {
             is_some: c_int,
             id: c_uint,
         );
+
         pub fn dispose(index: *mut Index);
 
         pub fn query(
@@ -47,8 +49,8 @@ mod ffi {
 pub struct Voyager(*mut Index);
 
 impl Voyager {
-    pub fn new() -> Self {
-        let index = unsafe { ffi::init_index() };
+    pub fn new(num_dimensions: u32) -> Self {
+        let index = unsafe { ffi::init_index(num_dimensions) };
         Voyager(index)
     }
 
@@ -104,12 +106,6 @@ impl Voyager {
     }
 }
 
-impl Default for Voyager {
-    fn default() -> Self {
-        Self::new()
-    }
-}
-
 impl Drop for Voyager {
     fn drop(&mut self) {
         unsafe {
@@ -124,7 +120,7 @@ mod test {
 
     #[test]
     fn test_voyager() {
-        let v = Voyager::new();
+        let v = Voyager::new(5);
 
         let v1 = &[1.0, 2.0, 3.0, 4.0, 5.0];
         let v2 = &[6.0, 7.0, 8.0, 9.0, 10.0];
@@ -140,7 +136,7 @@ mod test {
 
     #[test]
     fn test_distance() {
-        let v = Voyager::new();
+        let v = Voyager::new(5);
 
         let v1 = &[1.0, 2.0, 3.0, 4.0, 5.0];
         let v2 = &[6.0, 7.0, 8.0, 9.0, 10.0];
@@ -152,7 +148,7 @@ mod test {
     
     #[test]
     fn test_save() {
-        let v = Voyager::new();
+        let v = Voyager::new(5);
 
         let v1 = &[1.0, 2.0, 3.0, 4.0, 5.0];
         let v2 = &[6.0, 7.0, 8.0, 9.0, 10.0];
@@ -167,7 +163,8 @@ mod test {
     #[test]
     fn test_runtime() {
         unsafe {
-            let index = ffi::init_index();
+            let index = ffi::init_index(5);
+
             let v1 = &[1.0, 2.0, 3.0, 4.0, 5.0];
             let v2 = &[6.0, 7.0, 8.0, 9.0, 10.0];
 
