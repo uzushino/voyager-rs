@@ -10,7 +10,7 @@ mod ffi {
 
     #[link(name = "binding", kind = "static")]
     extern "C" {
-        pub fn init_index(num_dimensions: c_uint) -> *mut Index;
+        pub fn init_index(n: c_uint) -> *mut Index;
 
         pub fn add_item(
             index: *mut Index,
@@ -46,8 +46,8 @@ mod ffi {
 pub struct Voyager(*mut Index);
 
 impl Voyager {
-    pub fn new(num_dimensions: u32) -> Self {
-        let index = unsafe { ffi::init_index(num_dimensions) };
+    pub fn new(n: u32) -> Self {
+        let index = unsafe { ffi::init_index(n) };
         Voyager(index)
     }
 
