@@ -1,6 +1,7 @@
 use mnist::{Mnist, MnistBuilder};
 use rand::Rng;
 use rulinalg::matrix::{BaseMatrix, Matrix};
+use std::convert::TryInto;
 
 fn load_mnist(
     size: u32,
@@ -34,7 +35,7 @@ fn main() {
         .test_set_length(tst_size)
         .finalize();
 
-    let ann = voyager_rs::Voyager::new(28 * 28);
+    let ann = voyager_rs::Voyager::new();
     let mut rng = rand::thread_rng();
 
     for i in 0..trn_size {
@@ -46,8 +47,9 @@ fn main() {
             .into_iter()
             .map(|v| v as f32)
             .collect::<Vec<_>>();
-
-        ann.add_item(&img_to_vec, None);
+        
+        let v: [f32; 28*28] = img_to_vec.try_into().unwrap();
+        ann.add_item(v, None);
 
         if i % 1_000 == 0 {
             println!("Add item {}/{}.", i, trn_size);
@@ -72,7 +74,8 @@ fn main() {
             .map(|v| v as f32)
             .collect::<Vec<_>>();
 
-        let (result, _distance) = ann.query(&img_to_vec, 1, None);
+        let v: [f32; 28*28] = img_to_vec.try_into().unwrap();
+        let (result, _distance) = ann.query(v, 1, None);
         let actual = result
             .into_iter()
             .map(|v| trn_lbl[v as usize])
