@@ -1,6 +1,6 @@
+use libc::{c_float, c_int, c_uint, c_void};
 use std::ffi::CString;
 use std::path::Path;
-use libc::{c_float, c_int, c_uint, c_void};
 
 pub enum Index {}
 
@@ -42,8 +42,8 @@ mod ffi {
     }
 }
 
-pub struct Voyager<const N : usize> {
-    ix: *mut Index
+pub struct Voyager<const N: usize> {
+    ix: *mut Index,
 }
 
 impl<const N: usize> Voyager<N> {
@@ -54,7 +54,9 @@ impl<const N: usize> Voyager<N> {
         Voyager { ix: index }
     }
 
-    pub const fn dimension() -> usize { N }
+    pub const fn dimension() -> usize {
+        N
+    }
 
     pub fn add_item(&self, w: [f32; N], id: Option<u32>) {
         let len = w.len();
@@ -113,6 +115,12 @@ impl<const N: usize> Drop for Voyager<N> {
         unsafe {
             ffi::dispose(self.ix);
         }
+    }
+}
+
+impl<const N: usize> Default for Voyager<N> {
+    fn default() -> Self {
+        Self::new()
     }
 }
 

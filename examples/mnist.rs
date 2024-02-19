@@ -47,8 +47,8 @@ fn main() {
             .into_iter()
             .map(|v| v as f32)
             .collect::<Vec<_>>();
-        
-        let v: [f32; 28*28] = img_to_vec.try_into().unwrap();
+
+        let v: [f32; 28 * 28] = img_to_vec.try_into().unwrap();
         ann.add_item(v, None);
 
         if i % 1_000 == 0 {
@@ -74,7 +74,7 @@ fn main() {
             .map(|v| v as f32)
             .collect::<Vec<_>>();
 
-        let v: [f32; 28*28] = img_to_vec.try_into().unwrap();
+        let v: [f32; 28 * 28] = img_to_vec.try_into().unwrap();
         let (result, _distance) = ann.query(v, 1, None);
         let actual = result
             .into_iter()
