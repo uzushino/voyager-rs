@@ -45,3 +45,4 @@ $ cargo run --example mnist
 - [x] get_distance
 - [x] query
 - [x] save_index
+- [x] load_index
