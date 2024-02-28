@@ -55,3 +55,7 @@ void resize(IndexVm* vm, size_t size) {
 void save_index(IndexVm* vm, const char* path) {
   vm->index_->SaveIndex(path);
 }
+
+void load_index_from_stream(IndexVm* vm, const char *path) {
+  vm->index_->LoadIndex(path);
+}

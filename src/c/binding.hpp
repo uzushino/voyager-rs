@@ -23,6 +23,8 @@ extern "C" {
 
   void save_index(IndexVm* vm, const char* path);
 
+  void load_index_from_stream(IndexVm* vm, const char* path);
+
 #ifdef __cplusplus
 }
 #endif

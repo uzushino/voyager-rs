@@ -39,6 +39,8 @@ mod ffi {
         ) -> c_float;
 
         pub fn save_index(index: *mut Index, output_path: *const c_void) -> c_float;
+
+        pub fn load_index_from_stream(index: *mut Index, input_path: *const c_void) -> c_float;
     }
 }
 
@@ -108,6 +110,15 @@ impl<const N: usize> Voyager<N> {
             }
         }
     }
+    
+    pub fn load<P: AsRef<Path>>(&self, path: P) {
+        unsafe {
+            if let Some(f) = path.as_ref().as_os_str().to_str() {
+                let path_str_c = CString::new(f).unwrap();
+                ffi::load_index_from_stream(self.ix, path_str_c.as_ptr() as *const c_void);
+            }
+        }
+    }
 }
 
 impl<const N: usize> Drop for Voyager<N> {
@@ -167,6 +178,26 @@ mod test {
         v.add_item(v2, Some(2));
 
         v.save("test.index");
+    }
+
+    #[test]
+    fn test_load() {
+        let v = Voyager::new();
+
+        let v1 = [1.0, 2.0, 3.0, 4.0, 5.0];
+        let v2 = [6.0, 7.0, 8.0, 9.0, 10.0];
+
+        v.add_item(v1, Some(1));
+        v.add_item(v2, Some(2));
+
+        v.save("test.index");
+
+        let new_v = Voyager::new();
+        new_v.load("test.index");
+
+        let (result, distance) = new_v.query(v1, 2, None);
+        assert!(result == vec![1, 2]);
+        assert!(distance == vec![0.0, 125.0]);
     }
 
     #[test]

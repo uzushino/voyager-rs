@@ -42,6 +42,11 @@ namespace voyager {
       void SaveIndex(const char* path) {
         index_->saveIndex(path);
       }
+      
+      void LoadIndex(const char* filename) {
+        index_ = loadTypedIndexFromStream(
+            std::make_shared<FileInputStream>(filename));        
+      }
 
     private:
       std::shared_ptr<::Index> index_;
