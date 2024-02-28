@@ -110,7 +110,7 @@ impl<const N: usize> Voyager<N> {
             }
         }
     }
-    
+
     pub fn load<P: AsRef<Path>>(&self, path: P) {
         unsafe {
             if let Some(f) = path.as_ref().as_os_str().to_str() {
