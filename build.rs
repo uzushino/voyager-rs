@@ -6,6 +6,6 @@ fn main() {
         .warnings(false)
         .flag("-std=c++17")
         .file("src/c/binding.cc")
-        .include("voyager/cpp")
+        .include("voyager/cpp/src")
         .compile("binding");
 }
