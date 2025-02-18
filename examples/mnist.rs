@@ -36,7 +36,7 @@ fn main() {
         .finalize();
 
     let ann = voyager_rs::Voyager::new();
-    let mut rng = rand::thread_rng();
+    let mut rng = rand::rng();
 
     for i in 0..trn_size {
         let (_, img) = load_mnist(trn_size, rows, cols, &trn_img, &trn_lbl, i as usize);
@@ -57,7 +57,7 @@ fn main() {
     }
 
     for i in 0..10 {
-        let ti: u32 = rng.gen();
+        let ti: u32 = rng.random();
         let (lbl, img) = load_mnist(
             trn_size,
             rows,
