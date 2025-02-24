@@ -43,6 +43,10 @@ namespace voyager {
         index_->saveIndex(path);
       }
       
+      std::unordered_map<hnswlib::labeltype, hnswlib::tableint> const & getIDsMap() {
+        return index_->getIDsMap();
+      }
+      
       void LoadIndex(const char* filename) {
         index_ = loadTypedIndexFromStream(
             std::make_shared<FileInputStream>(filename));        
