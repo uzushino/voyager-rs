@@ -41,7 +41,7 @@ mod ffi {
         pub fn save_index(index: *mut Index, output_path: *const c_void) -> c_float;
 
         pub fn load_index_from_stream(index: *mut Index, input_path: *const c_void) -> c_float;
-        
+
         pub fn ids(index: *mut Index, result: *mut usize, len: usize);
     }
 }
@@ -106,10 +106,12 @@ impl<const N: usize> Voyager<N> {
 
     pub fn ids(&self) -> Vec<usize> {
         let len = N;
-        
+
         let mut result = Vec::with_capacity(len);
-        unsafe { ffi::ids(self.ix, result.as_mut_ptr(), len); }
-        
+        unsafe {
+            ffi::ids(self.ix, result.as_mut_ptr(), len);
+        }
+
         result
     }
 
