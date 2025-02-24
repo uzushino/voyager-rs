@@ -25,6 +25,8 @@ extern "C" {
 
   void load_index_from_stream(IndexVm* vm, const char* path);
 
+  void ids(IndexVm* vm, size_t *result, size_t len) {
+
 #ifdef __cplusplus
 }
 #endif

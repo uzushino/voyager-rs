@@ -1,6 +1,7 @@
 #include <vector>
 #include <TypedIndex.h>
 #include "binding.hpp"
+#include "hnswlib.h"
 
 IndexVm* init_index(size_t n) {
   IndexVm* vm = new IndexVm {};
@@ -58,4 +59,20 @@ void save_index(IndexVm* vm, const char* path) {
 
 void load_index_from_stream(IndexVm* vm, const char *path) {
   vm->index_->LoadIndex(path);
+}
+
+void ids(IndexVm* vm, size_t *result, size_t len) {
+  std::unordered_map<hnswlib::labeltype, hnswlib::tableint> const &m = vm->index_->getIDsMap();
+  
+  size_t index = 0;
+  for (const auto& pair : m) {
+    if (index < len) {
+      result[index] = pair.second;
+      index++;
+    } else {
+      break;
+    }
+  }
+
+  return ;
 }
